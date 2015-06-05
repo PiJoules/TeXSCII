@@ -42,5 +42,8 @@ import sys
 from Frac import Frac
 
 for line in sys.stdin:
-	print Frac().to_string()
+	f = Frac(0, 0, "num", "den")
+	string_lines = f.to_strings()
+	for l in string_lines:
+		print l
 
