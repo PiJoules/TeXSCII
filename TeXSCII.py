@@ -27,10 +27,20 @@ sub - starts on immediate bottom right of last character in the base
 sup - starts on immediate top right of last character in the base
 
 pi - output phi
+
+
+Classes
+- Command
+  - class that will take place of any of the commands listed above
+  - the class can have children representing the content of it as either a string or another Command
+  - will have a to_string() function that converts a Command object and all nested Command objects to a string
+  - the to_strings() functions will vary depending on what kind of command it actually is
 """
 
 
 import sys
+from Frac import Frac
 
 for line in sys.stdin:
-	print line
+	print Frac().to_string()
+
