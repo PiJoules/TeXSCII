@@ -1,1 +1,1 @@
-log_{e}(e^{x})=x
+\frac{a}{b} \frac{c}{d}

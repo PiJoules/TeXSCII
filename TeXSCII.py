@@ -26,7 +26,7 @@ sub - starts on immediate bottom right of last character in the base
 
 sup - starts on immediate top right of last character in the base
 
-pi - output phi
+pi - output pi
 
 
 Classes
@@ -39,11 +39,54 @@ Classes
 
 
 import sys
-from Frac import Frac
 
-for line in sys.stdin:
-	f = Frac(0, 0, "num", "den")
-	string_lines = f.to_strings()
-	for l in string_lines:
-		print l
+commands = {
+	"frac": {
+		"argc": 2,
+		"disp": "0 / 1" # arg0 / arg1
+	}
+}
 
+def parse_line(line):
+	# Parse the line
+	result = ""
+	for i in range(len(line)):
+		c = line[i]
+
+		if c == "\\":
+			# Found a command. Filter which one it is
+			frac_start = i
+			command = ""
+			j = 1
+			while line[i+j] != "{":
+				command += line[i+j]
+				j += 1
+
+			if command in commands:
+				if line[i+j+1] == "}":
+					print "Argument for command '" + command + "' not given"
+					return
+
+				argc = commands[command]
+				args = [""]*argc
+				for k in range(len(argc)):
+					j += 1 # Currently on the {. Move 1 to get the the arg.
+					while line[i+j] != "}":
+						args[k] += line[i+j]
+						j += 1
+					j += 1 # Move another 1 to get onto the next char.
+
+				# Cases for each command
+
+			else:
+				print "command '" + command + "' does not exist"
+				return
+
+		else:
+			result += c
+
+	print result
+
+if __name__ == "__main__":
+	for line in sys.stdin:
+		parse_line(line)
