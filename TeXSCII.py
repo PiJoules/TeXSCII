@@ -28,13 +28,6 @@ sup - starts on immediate top right of last character in the base
 
 pi - output pi
 
-
-Classes
-- Command
-  - class that will take place of any of the commands listed above
-  - the class can have children representing the content of it as either a string or another Command
-  - will have a to_string() function that converts a Command object and all nested Command objects to a string
-  - the to_strings() functions will vary depending on what kind of command it actually is
 """
 
 
@@ -43,18 +36,33 @@ import sys
 commands = {
 	"frac": {
 		"argc": 2,
-		"disp": "$0/$1" # arg0 / arg1
+		"disp": lambda args: [
+			substitute_args("$0", args),
+			"-"*max([len(arg) for arg in args]),
+			substitute_args("$1", args)
+		]
 	}
 }
 
+
+"""
+Substitute the arguments into how it will be displayed.
+"""
 def substitute_args(disp, args):
 	for i in range(len(args)):
 		disp = disp.replace("$"+str(i), args[i])
 	return disp
 
+
+"""
+Parse the line.
+"""
 def parse_line(line):
+	map_result = [""] # 2D array of characters
+	max_line_len = 0
+	zero_index = 0
+
 	# Parse the line
-	result = ""
 	i = 0
 	while i < len(line):
 		c = line[i]
@@ -83,17 +91,44 @@ def parse_line(line):
 					j += 1 # Move another 1 to get onto the next char.
 
 				# Cases for each command
-				result += substitute_args(commands[command]["disp"], args)
+				disp = commands[command]["disp"](args)
+
+				# Apply the display
+				# Add any new levels
+				while len(map_result) < len(disp):
+					if (len(disp)-len(map_result)) % 2 == 1:
+						map_result.append(" "*max_line_len)
+					else:
+						map_result.insert(0," "*max_line_len)
+						zero_index += 1 # Move the zero index
+
+				# Add the display content
+				for k in range(len(disp)):
+					map_result[k] += disp[k]
+
+				# Reset the length
+				max_line_len = max([len(r) for r in map_result])
+
+				# Append any necessary spaces
+				for k in range(len(map_result)):
+					while len(map_result[k]) < max_line_len:
+						map_result[k] += " "
+
 				i += j # Skip the command after reading it
 				continue
 			else:
 				print "command '" + command + "' does not exist"
 				return
 		else:
-			result += c
+			for j in range(len(map_result)):
+				if j == zero_index:
+					map_result[zero_index] += c
+				else:
+					map_result[j] += " "
+			max_line_len += 1
 		i += 1
 
-	print result
+	print "\n".join(map_result)
 
 if __name__ == "__main__":
 	for line in sys.stdin:
