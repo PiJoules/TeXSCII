@@ -43,14 +43,20 @@ import sys
 commands = {
 	"frac": {
 		"argc": 2,
-		"disp": "0 / 1" # arg0 / arg1
+		"disp": "$0/$1" # arg0 / arg1
 	}
 }
+
+def substitute_args(disp, args):
+	for i in range(len(args)):
+		disp = disp.replace("$"+str(i), args[i])
+	return disp
 
 def parse_line(line):
 	# Parse the line
 	result = ""
-	for i in range(len(line)):
+	i = 0
+	while i < len(line):
 		c = line[i]
 
 		if c == "\\":
@@ -67,9 +73,9 @@ def parse_line(line):
 					print "Argument for command '" + command + "' not given"
 					return
 
-				argc = commands[command]
+				argc = commands[command]["argc"]
 				args = [""]*argc
-				for k in range(len(argc)):
+				for k in range(argc):
 					j += 1 # Currently on the {. Move 1 to get the the arg.
 					while line[i+j] != "}":
 						args[k] += line[i+j]
@@ -77,13 +83,15 @@ def parse_line(line):
 					j += 1 # Move another 1 to get onto the next char.
 
 				# Cases for each command
-
+				result += substitute_args(commands[command]["disp"], args)
+				i += j # Skip the command after reading it
+				continue
 			else:
 				print "command '" + command + "' does not exist"
 				return
-
 		else:
 			result += c
+		i += 1
 
 	print result
 
