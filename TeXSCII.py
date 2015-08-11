@@ -32,6 +32,7 @@ pi - output pi
 
 
 import sys
+import copy
 
 commands = {
 	"frac": {
@@ -70,8 +71,21 @@ Given a map with commands in any of its lines,
 decide the commands, apply it to the map, and
 decode them.
 """
-def parse_map(initial_map):
-	pass
+def parse_map(initial_map, zero_index):
+	max_line_len = max([len(x) for x in initial_map])
+	i = 0
+	while i < len(initial_map):
+		line = initial_map[i]
+		sub_map, sub_map_zero = parse_pattern(line)
+
+		# Replace the line with the new map
+		del initial_map[zero_index]
+		for line in sub_map[::-1]:
+			initial_map.insert(zero_index,line)
+
+		zero_index += sub_map_zero-1 # Adjust the zero index
+		i += 1
+	return initial_map
 
 
 def parse_pattern(line):
@@ -116,36 +130,37 @@ def parse_pattern(line):
 						j += 1
 					j += 1 # Move another 1 to get onto the next char.
 
-					"""
-					IN THE EVENT OF A NESTED COMMAND, FIND THE MAP PRODUCED AND APPLY IT
-					TO THIS CURRENT MAP
-					"""
-					if contains_args(args[k]):
-						args[k] = parse_pattern(args[k]) # The argument is now a map instead of a string
-
-				# Cases for each command
-				disp = commands[command]["disp"](args)
-
-				# Apply the display
-				# Add any new levels
-				while len(map_result) < len(disp):
-					if (len(disp)-len(map_result)) % 2 == 1:
-						map_result.append(" "*max_line_len)
+				"""
+				IN THE EVENT OF A NESTED COMMAND, FIND THE MAP PRODUCED AND APPLY IT
+				TO THIS CURRENT MAP
+				"""
+				for arg in args:
+					if contains_args(arg):
+						sub_map, sub_map_zero = parse_pattern(args[k]) # The argument is now a map instead of a string
 					else:
-						map_result.insert(0," "*max_line_len)
-						zero_index += 1 # Move the zero index
+						# Cases for each command
+						disp = commands[command]["disp"](args)
 
-				# Add the display content
-				for k in range(len(disp)):
-					map_result[k] += disp[k]
+						# Apply the display
+						# Add any new levels
+						while len(map_result) < len(disp):
+							if (len(disp)-len(map_result)) % 2 == 1:
+								map_result.append(" "*max_line_len)
+							else:
+								map_result.insert(0," "*max_line_len)
+								zero_index += 1 # Move the zero index
 
-				# Reset the length
-				max_line_len = max([len(r) for r in map_result])
+						# Add the display content
+						for k in range(len(disp)):
+							map_result[k] += disp[k]
 
-				# Append any necessary spaces
-				for k in range(len(map_result)):
-					while len(map_result[k]) < max_line_len:
-						map_result[k] += " "
+						# Reset the length
+						max_line_len = max([len(r) for r in map_result])
+
+						# Append any necessary spaces
+						for k in range(len(map_result)):
+							while len(map_result[k]) < max_line_len:
+								map_result[k] += " "
 
 				i += j # Skip the command after reading it
 				continue
@@ -157,11 +172,11 @@ def parse_pattern(line):
 					map_result[j] += " "
 			max_line_len += 1
 
-	return map_result
+	return [map_result, zero_index]
 
 
 """
-Parse the line.
+Parse the line into a map of characters.
 """
 def parse_line(line):
 	map_result = [""] # 2D array of characters
