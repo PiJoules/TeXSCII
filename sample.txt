@@ -1,2 +1,2 @@
 \frac{12}{\frac{a}{b}} + \frac{c}{d}
-\frac{12}{a} \frac{c}{d}
+\frac{12}{a} + \frac{c}{d}

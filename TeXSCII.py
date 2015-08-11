@@ -36,23 +36,9 @@ import copy
 
 commands = {
 	"frac": {
-		"argc": 2,
-		"disp": lambda args: [
-			substitute_args("$0", args),
-			"-"*max([len(arg) for arg in args]),
-			substitute_args("$1", args)
-		]
+		"argc": 2
 	}
 }
-
-
-"""
-Substitute the arguments into how it will be displayed.
-"""
-def substitute_args(disp, args):
-	for i in range(len(args)):
-		disp = disp.replace("$"+str(i), args[i])
-	return disp
 
 
 """
@@ -103,28 +89,6 @@ def frac_map(args):
 	disp[zero_index] = disp[zero_index]*max([len(x) for x in disp])
 
 	return [disp, zero_index]
-
-
-"""
-Given a map with commands in any of its lines,
-decide the commands, apply it to the map, and
-decode them.
-"""
-def parse_map(initial_map, zero_index):
-	max_line_len = max([len(x) for x in initial_map])
-	i = 0
-	while i < len(initial_map):
-		line = initial_map[i]
-		sub_map, sub_map_zero = parse_pattern(line)
-
-		# Replace the line with the new map
-		del initial_map[zero_index]
-		for line in sub_map[::-1]:
-			initial_map.insert(zero_index,line)
-
-		zero_index += sub_map_zero-1 # Adjust the zero index
-		i += 1
-	return initial_map
 
 
 def parse_pattern(line):
@@ -183,7 +147,7 @@ def parse_pattern(line):
 						map_result.append(" "*max_line_len)
 					else:
 						map_result.insert(0," "*max_line_len)
-						zero_index += 1 # Move the zero index
+				zero_index += disp_zero
 
 				# Add the display content
 				for k in range(len(disp)):
@@ -214,3 +178,4 @@ def parse_pattern(line):
 if __name__ == "__main__":
 	for line in sys.stdin:
 		print "\n".join(parse_pattern(line.strip())[0])
+		print ""
