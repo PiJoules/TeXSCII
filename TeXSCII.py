@@ -55,6 +55,112 @@ def substitute_args(disp, args):
 
 
 """
+Check whether or not a string contains (a command with) arguments.
+"""
+def contains_args(line):
+	for i in range(1, len(line)):
+		# Have a { to indicate an argument. \{ may indicate a literal {, not a arg.
+		if not line[i-1] == "\\" and line[i] == "{":
+			return True
+	return False
+
+
+"""
+Given a map with commands in any of its lines,
+decide the commands, apply it to the map, and
+decode them.
+"""
+def parse_map(initial_map):
+	pass
+
+
+def parse_pattern(line):
+	map_result = [""] # 2D array of characters
+	max_line_len = 0
+	zero_index = 0
+
+	# Parse the line
+	i = 0
+	while i < len(line):
+		c = line[i]
+
+		if c == "\\":
+			# Found a command. Filter which one it is
+			frac_start = i
+			command = ""
+			j = 1
+			while line[i+j] != "{":
+				command += line[i+j]
+				j += 1
+
+			if command in commands:
+				if line[i+j+1] == "}":
+					print "Argument for command '" + command + "' not given"
+					return
+
+				argc = commands[command]["argc"]
+				args = [""]*argc
+				bracket_count = 1 # Counter for counting bracket pairs
+				for k in range(argc):
+					j += 1 # Currently on the {. Move 1 to get the the arg.
+					while bracket_count > 0:
+						if line[i+j] == "{":
+							bracket_count += 1
+						elif line[i+j] == "}": # Break immediately on finding a } and finishing bracket pairs
+							bracket_count -= 1
+							if bracket_count <= 0:
+								break
+
+						# Actually keep track of the argument
+						args[k] += line[i+j]
+						j += 1
+					j += 1 # Move another 1 to get onto the next char.
+
+					"""
+					IN THE EVENT OF A NESTED COMMAND, FIND THE MAP PRODUCED AND APPLY IT
+					TO THIS CURRENT MAP
+					"""
+					if contains_args(args[k]):
+						args[k] = parse_pattern(args[k]) # The argument is now a map instead of a string
+
+				# Cases for each command
+				disp = commands[command]["disp"](args)
+
+				# Apply the display
+				# Add any new levels
+				while len(map_result) < len(disp):
+					if (len(disp)-len(map_result)) % 2 == 1:
+						map_result.append(" "*max_line_len)
+					else:
+						map_result.insert(0," "*max_line_len)
+						zero_index += 1 # Move the zero index
+
+				# Add the display content
+				for k in range(len(disp)):
+					map_result[k] += disp[k]
+
+				# Reset the length
+				max_line_len = max([len(r) for r in map_result])
+
+				# Append any necessary spaces
+				for k in range(len(map_result)):
+					while len(map_result[k]) < max_line_len:
+						map_result[k] += " "
+
+				i += j # Skip the command after reading it
+				continue
+		else:
+			for j in range(len(map_result)):
+				if j == zero_index:
+					map_result[zero_index] += c
+				else:
+					map_result[j] += " "
+			max_line_len += 1
+
+	return map_result
+
+
+"""
 Parse the line.
 """
 def parse_line(line):
@@ -129,7 +235,8 @@ def parse_line(line):
 		i += 1
 
 	print "\n".join(map_result)
+	print ""
 
 if __name__ == "__main__":
 	for line in sys.stdin:
-		parse_line(line)
+		parse_line(line.strip())
