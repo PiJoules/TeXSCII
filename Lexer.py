@@ -78,13 +78,22 @@ class Lexer(object):
 						map_result.append(" "*max_line_len)
 					zero_index = max(zero_index,disp_zero)
 
-					# Specific case for _{a}^{b}
+					# Special cases
 					if len(commands) > 1:
+						# Specific case for _{a}^{b}
 						if commands[-1] == "^" and commands[-2] == "_":
 							k = 1
 							# Keep moving back unti the bottom left char is not a whitespace char
 							while map_result[zero_index-disp_zero+1][-k] == " ":
 								map_result[zero_index-disp_zero] = map_result[zero_index-disp_zero][:-1]
+								k += 1
+
+						# Specific case for ^{a}_{b}
+						if commands[-1] == "_" and commands[-2] == "^":
+							k = 1
+							# Keep moving back unti the bottom left char is not a whitespace char
+							while map_result[zero_index-disp_zero][-k] == " ":
+								map_result[zero_index-disp_zero+len(disp)-1] = map_result[zero_index-disp_zero+len(disp)-1][:-1]
 								k += 1
 
 					# Add the display content

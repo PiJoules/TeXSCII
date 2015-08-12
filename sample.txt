@@ -13,4 +13,6 @@ x^{2}
 
 # Subscripts and superscripts
 x_{12}^{2}
-x^{2}_{1}
+x^{234}_{12}
+\frac{x^{23}}{x_{3}}
+x^{\frac{a}{b}}_{12}
