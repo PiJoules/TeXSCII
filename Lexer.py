@@ -18,6 +18,7 @@ class Lexer(object):
 		map_result = [""] # 2D array of characters
 		max_line_len = 0
 		zero_index = 0
+		commands = [] # List of commands read in
 
 		# Parse the line
 		i = 0
@@ -35,6 +36,7 @@ class Lexer(object):
 						j += 1
 				else:
 					command = c
+				commands.append(command)
 
 				if command in self.commands:
 					if line[i+j+1] == "}":
@@ -68,16 +70,22 @@ class Lexer(object):
 
 					# Apply the display
 					# Add any new levels
-					# while len(map_result) < len(disp):
-					# 	if (len(disp)-len(map_result)) % 2 == 1:
-					# 		map_result.append(" "*max_line_len)
-					# 	else:
-					# 		map_result.insert(0," "*max_line_len)
 					for k in range(0,disp_zero-zero_index):
 						map_result.insert(0," "*max_line_len)
+					for k in range(0,zero_index-disp_zero):
+						map_result.append(" "*max_line_len)
 					while len(map_result) < len(disp):
 						map_result.append(" "*max_line_len)
 					zero_index = max(zero_index,disp_zero)
+
+					# Specific case for _{a}^{b}
+					if len(commands) > 1:
+						if commands[-1] == "^" and commands[-2] == "_":
+							k = 1
+							# Keep moving back unti the bottom left char is not a whitespace char
+							while map_result[zero_index-disp_zero+1][-k] == " ":
+								map_result[zero_index-disp_zero] = map_result[zero_index-disp_zero][:-1]
+								k += 1
 
 					# Add the display content
 					for k in range(len(disp)):

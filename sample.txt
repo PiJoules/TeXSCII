@@ -10,3 +10,7 @@ x_{1}
 # Superscripts
 x^{2}
 \frac{x^{2}}{x^{3}}
+
+# Subscripts and superscripts
+x_{12}^{2}
+x^{2}_{1}
