@@ -4,4 +4,9 @@
 \frac{\frac{12}{b}}{\frac{a}{b}} + \frac{\frac{\frac{a}{b}}{b}}{\frac{a}{\frac{a}{b}}}
 
 # Subscripts
+x_{1}
 \frac{x_{1}}{x_{2}}
+
+# Superscripts
+x^{2}
+\frac{x^{2}}{x^{3}}

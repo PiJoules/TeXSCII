@@ -4,12 +4,14 @@ Lexer class for parsing lines of LaTex.
 
 import Fraction
 import Subscript
+import Superscript
 
 class Lexer(object):
 	def __init__(self):
 		self.commands = {
 			"frac": Fraction.Fraction(),
-			"_": Subscript.Subscript()
+			"_": Subscript.Subscript(),
+			"^": Superscript.Superscript()
 		}
 
 	def parse_line(self, line):
@@ -66,11 +68,15 @@ class Lexer(object):
 
 					# Apply the display
 					# Add any new levels
+					# while len(map_result) < len(disp):
+					# 	if (len(disp)-len(map_result)) % 2 == 1:
+					# 		map_result.append(" "*max_line_len)
+					# 	else:
+					# 		map_result.insert(0," "*max_line_len)
+					for k in range(0,disp_zero-zero_index):
+						map_result.insert(0," "*max_line_len)
 					while len(map_result) < len(disp):
-						if (len(disp)-len(map_result)) % 2 == 1:
-							map_result.append(" "*max_line_len)
-						else:
-							map_result.insert(0," "*max_line_len)
+						map_result.append(" "*max_line_len)
 					zero_index = max(zero_index,disp_zero)
 
 					# Add the display content
