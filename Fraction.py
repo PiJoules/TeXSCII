@@ -15,10 +15,9 @@ class Fraction(Command):
 		super(self.__class__, self).__init__(2)
 
 	def apply_args(self,args):
-		#print "args",args
 		disp = [
 			"$0",
-			"-",
+			"-", # Zero
 			"$1"
 		]
 		zero_index = 1

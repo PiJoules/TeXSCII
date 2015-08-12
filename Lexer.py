@@ -3,11 +3,13 @@ Lexer class for parsing lines of LaTex.
 """
 
 import Fraction
+import Subscript
 
 class Lexer(object):
 	def __init__(self):
 		self.commands = {
-			"frac": Fraction.Fraction()
+			"frac": Fraction.Fraction(),
+			"_": Subscript.Subscript()
 		}
 
 	def parse_line(self, line):
@@ -19,15 +21,18 @@ class Lexer(object):
 		i = 0
 		while i < len(line):
 			c = line[i]
-
-			if c == "\\":
+				
+			# Commands can be single (ie. _,^) or multiple characters (\frac,\root)
+			if c in self.commands or c == "\\":
 				# Found a command. Filter which one it is
-				frac_start = i
 				command = ""
 				j = 1
-				while line[i+j] != "{":
-					command += line[i+j]
-					j += 1
+				if c == "\\":	
+					while line[i+j] != "{":
+						command += line[i+j]
+						j += 1
+				else:
+					command = c
 
 				if command in self.commands:
 					if line[i+j+1] == "}":
