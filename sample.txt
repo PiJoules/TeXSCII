@@ -1,2 +1,3 @@
 \frac{\frac{12}{b}}{\frac{a}{b}} + \frac{c}{d}
 \frac{12}{a} + \frac{c}{d}
+\frac{\frac{12}{b}}{\frac{a}{b}} + \frac{\frac{\frac{a}{b}}{b}}{\frac{a}{\frac{a}{b}}}
