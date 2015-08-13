@@ -6,6 +6,7 @@ import Fraction
 import Subscript
 import Superscript
 import Root
+import SquareRoot
 
 class Lexer(object):
 	def __init__(self):
@@ -13,7 +14,8 @@ class Lexer(object):
 			"frac": Fraction.Fraction(),
 			"_": Subscript.Subscript(),
 			"^": Superscript.Superscript(),
-			"root": Root.Root()
+			"root": Root.Root(),
+			"sqrt": SquareRoot.SquareRoot()
 		}
 
 	def parse_line(self, line):

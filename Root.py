@@ -18,7 +18,6 @@ class Root(Command):
 			" /", # This will actually be deleted, but is here for visualization
 			"v$1" # Content starts directly under the first underscore, not imediately after the v
 		]
-		zero_index = 2
 		arg0_has_args = self.line_has_args(args[0])
 		arg1_has_args = self.line_has_args(args[1])
 
@@ -35,8 +34,6 @@ class Root(Command):
 			for i in range(len(disp)-3):
 				disp[i] += " "
 			disp[-3] += "_"
-
-			zero_index += len(disp)-1 # Adjust the zero index
 
 			# Add space to account for the length of the first arg
 			max_line_len = max([len(disp[i])-1 for i in range(len(disp)-2)])
@@ -80,7 +77,6 @@ class Root(Command):
 			disp[-h-1] += "_"*(max([len(l) for l in sub_map])-1)
 		else:
 			del disp[-2] # No need for the diagnol for content of height 1
-			zero_index -= 1
 			disp[-1] = disp[-1].replace("$1", args[1])
 
 			# Adjust the number of underscores on the above line and spaces on any further lines
@@ -88,8 +84,9 @@ class Root(Command):
 				disp[j] += " "*(len(disp[-1])-2)
 			disp[-2] += "_"*(len(disp[-1])-2-(power_len-1))
 
-		# Trim whitespace
+		# Trim leading whitespace
 		while all([x[0] == " " for x in disp]):
 			for i in range(len(disp)):
 				disp[i] = disp[i][1:]
-		return [disp, zero_index]
+
+		return [disp, len(disp)-1]
