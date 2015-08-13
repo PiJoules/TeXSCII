@@ -7,7 +7,7 @@ import Subscript
 import Superscript
 import Root
 import SquareRoot
-import pi
+import Pi
 
 class Lexer(object):
 	def __init__(self):
@@ -19,7 +19,7 @@ class Lexer(object):
 			"sqrt": SquareRoot.SquareRoot()
 		}
 		self.symbols = {
-			"pi": pi.pi()
+			"pi": Pi.Pi()
 		}
 
 	def parse_line(self, line):
