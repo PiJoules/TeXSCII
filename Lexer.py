@@ -5,13 +5,15 @@ Lexer class for parsing lines of LaTex.
 import Fraction
 import Subscript
 import Superscript
+import Root
 
 class Lexer(object):
 	def __init__(self):
 		self.commands = {
 			"frac": Fraction.Fraction(),
 			"_": Subscript.Subscript(),
-			"^": Superscript.Superscript()
+			"^": Superscript.Superscript(),
+			"root": Root.Root()
 		}
 
 	def parse_line(self, line):

@@ -16,7 +16,7 @@ class Superscript(Command):
 	def apply_args(self,args):
 		disp = [
 			"$0",
-			" " # Zero
+			"" # Zero
 		]
 		zero_index = 1
 		arg0_has_args = self.line_has_args(args[0])
@@ -32,7 +32,5 @@ class Superscript(Command):
 			zero_index += len(sub_map)-1 # Adjust the zero index
 		else:
 			disp[0] = disp[0].replace("$0", args[0])
-
-		disp[zero_index] = disp[zero_index]*max([len(x) for x in disp])
 
 		return [disp, zero_index]

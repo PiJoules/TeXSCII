@@ -15,7 +15,7 @@ class Subscript(Command):
 
 	def apply_args(self,args):
 		disp = [
-			" ", # Zero
+			"", # Zero
 			"$0"
 		]
 		zero_index = 0
@@ -30,7 +30,5 @@ class Subscript(Command):
 				disp.append(line)
 		else:
 			disp[-1] = disp[-1].replace("$0", args[0])
-
-		disp[zero_index] = disp[zero_index]*max([len(x) for x in disp])
 
 		return [disp, zero_index]
