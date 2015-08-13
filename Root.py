@@ -15,7 +15,7 @@ class Root(Command):
 	def apply_args(self,args):
 		disp = [
 			"$0_",
-			" /",
+			" /", # This will actually be deleted, but is here for visualization
 			"v$1" # Content starts directly under the first underscore, not imediately after the v
 		]
 		zero_index = 2
@@ -49,18 +49,35 @@ class Root(Command):
 			power_len = len(disp[0])-1
 
 			# Add space to account for the length of the first arg
-			for i in range(len(disp[0])-2):
-				disp[1] = " " + disp[1]
-				disp[2] = " " + disp[2]
+			for i in range(power_len-1):
+				disp[-1] = " " + disp[-1]
+				disp[-2] = " " + disp[-2]
 
 		# The content
 		if arg1_has_args:
 			sub_map, sub_map_zero = Lexer.Lexer().parse_line(args[1])
 
-			# Replace the line with the new map
-			del disp[-1]
-			for line in sub_map:
-				disp.append(line)
+			# Add the diagnols
+			del disp[-2]
+			h = len(sub_map)
+			for i in range(h-1):
+				disp.insert(-1-i, " "*(power_len+i) + "/")
+				while (len(disp[-2-i]) < h+power_len-1):
+					disp[-2-i] += " "
+
+			# Add the sub_map to the last h rows now
+			for i in range(h):
+				disp[-h+i] += sub_map[i]
+
+			# Adjust the upper rows
+			if h > power_len:
+				disp[-1] = disp[-1].replace("$1", " "*(h-1))
+				for i in range(len(disp)-h):
+					disp[i] = " "*(h-1) + disp[i]
+			else:
+				for i in range(h):
+					disp[-1-i] = disp[-1-i].replace("$1", " "*(h-1))[(h-1):]
+			disp[-h-1] += "_"*(max([len(l) for l in sub_map])-1)
 		else:
 			del disp[-2] # No need for the diagnol for content of height 1
 			zero_index -= 1
@@ -71,4 +88,8 @@ class Root(Command):
 				disp[j] += " "*(len(disp[-1])-2)
 			disp[-2] += "_"*(len(disp[-1])-2-(power_len-1))
 
+		# Trim whitespace
+		while all([x[0] == " " for x in disp]):
+			for i in range(len(disp)):
+				disp[i] = disp[i][1:]
 		return [disp, zero_index]
