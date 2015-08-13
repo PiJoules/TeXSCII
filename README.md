@@ -1,6 +1,8 @@
 # TeXSCII
 Implementation of the [/r/dailyprogrammer challenge of the day](https://www.reddit.com/r/dailyprogrammer/comments/38nhgx/20150605_challenge_217_practical_exercise_texscii/) in whatever language I decide to use.
 
+This converts LaTeX equations into ASCII symbols that can be printed on the command line.
+
 ## Commands
 - `\frac{top}{bottom}`: A fraction with the given top and bottom pieces
 - `\sqrt{content}`: A square-root sign
