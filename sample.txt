@@ -1,33 +1,3 @@
-# Fractions
-\frac{\frac{12}{b}}{\frac{a}{b}} + \frac{c}{d}
-\frac{12}{a} + \frac{c}{d}
-\frac{\frac{12}{b}}{\frac{a}{b}} + \frac{\frac{\frac{a}{b}}{b}}{\frac{a}{\frac{a}{b}}}
-
-# Subscripts
-x_{1}
-\frac{x_{1}}{x_{2}}
-
-# Superscripts
-x^{2}
-\frac{x^{2}}{x^{3}}
-
-# Subscripts and superscripts
-x_{12}^{2}
-x^{234}_{12}
-\frac{x^{23}}{x_{3}}
-x^{\frac{a}{b}}_{12}
-
-# Roots
-\root{32}{567}
-\root{36348952}{567}
-\root{\frac{a}{b}}{5}
-\root{32}{a/b}
-\root{5}{\frac{a}{b}}
-\root{58347652346}{\frac{a}{645237465932465983264589}}
-\root{58347652346}{\frac{645237465932465983264589}{a}}
-\root{\frac{a}{bvayylmao}}{\frac{645237465932465983264589}{a}} + \root{\frac{a}{bvayylmao}}{\frac{645237465932465983264589}{a}} + \frac{12}{a} + \frac{c}{d}
-\root{2}{\root{2}{\frac{a}{bcd}}}
-
 # /r/dailyprogrammer test cases
 log_{e}(e^{x})=x
 
