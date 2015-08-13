@@ -7,6 +7,7 @@ import Subscript
 import Superscript
 import Root
 import SquareRoot
+import pi
 
 class Lexer(object):
 	def __init__(self):
@@ -16,6 +17,9 @@ class Lexer(object):
 			"^": Superscript.Superscript(),
 			"root": Root.Root(),
 			"sqrt": SquareRoot.SquareRoot()
+		}
+		self.symbols = {
+			"pi": pi.pi()
 		}
 
 	def parse_line(self, line):
@@ -38,16 +42,22 @@ class Lexer(object):
 					while line[i+j] != "{":
 						command += line[i+j]
 						j += 1
+						if command in self.symbols:
+							break
 				else:
 					command = c
 				commands.append(command)
 
-				if command in self.commands:
-					if line[i+j+1] == "}":
-						print "Argument for command '" + command + "' not given"
-						return
+				if command in self.commands or command in self.symbols:
+					if command in self.commands:
+						if line[i+j+1] == "}":
+							print "Argument for command '" + command + "' not given"
+							return
 
-					argc = self.commands[command].argc
+					if command in self.commands:
+						argc = self.commands[command].argc
+					elif command in self.symbols:
+						argc = self.symbols[command].argc
 					args = [""]*argc
 					for k in range(argc):
 						bracket_count = 1 # Counter for counting bracket pairs
@@ -70,7 +80,10 @@ class Lexer(object):
 					TO THIS CURRENT MAP
 					"""
 					# Cases for each command
-					disp, disp_zero = self.commands[command].apply_args(args)
+					if command in self.symbols:
+						disp, disp_zero = self.symbols[command].apply_args([])
+					elif command in self.commands:
+						disp, disp_zero = self.commands[command].apply_args(args)
 
 					# Apply the display
 					# Add any new levels
@@ -122,6 +135,13 @@ class Lexer(object):
 						map_result[j] += " "
 				max_line_len += 1
 			i += 1
+
+		# Remove any blank lines
+		while len(map_result) > 0 and map_result[0].strip() == "":
+			del map_result[0]
+			zero_index -= 1
+		while len(map_result) > 0 and map_result[-1].strip() == "":
+			del map_result[-1]
 
 		return [map_result, zero_index]
 
